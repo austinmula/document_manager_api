@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FilesController;
+use App\Http\Controllers\PassportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+Route::post('register', [PassportController::class, 'register']);
+Route::post('login', [PassportController::class, 'login']);
+
+Route::resource('files', FilesController::class)->middleware('auth:api');
