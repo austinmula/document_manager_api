@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FilesController extends Controller
 {
@@ -36,13 +38,25 @@ class FilesController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'title' => 'required',
-            'description' => 'required'
+            'name' => 'required',
         ]);
 
-        $file = new Post();
-        $file->title = $request->title;
-        $file->description = $request->description;
+        $file = new File();
+        $file->name = $request->name;
+        $file->category_id = $request->category;
+        $file->user_id = (auth()->id());
+
+//        $file->url = $request->file
+        $url = null;
+        if ($request->hasFile('file')) {
+            $url = $request->file('file')->store(
+                'files',
+                'public',
+            );
+        }
+
+        $file->url = $url;
+
 
         if (auth()->user()->files()->save($file))
             return response()->json([
