@@ -11,13 +11,13 @@ class Department extends Model
 
     protected $fillable = ["name"];
 
-//    public function files()
-//    {
-//
-//    }
-//
-//    public function users()
-//    {
-//
-//    }
+    public function users()
+    {
+        return $this->hasMany(Department::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
 }
