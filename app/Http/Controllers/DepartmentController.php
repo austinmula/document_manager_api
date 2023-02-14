@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class FilesController extends Controller
+class DepartmentController extends Controller
 {
+    //
     public function index()
     {
         $files = auth()->user()->files;
@@ -37,7 +36,6 @@ class FilesController extends Controller
 
     public function store(Request $request)
     {
-//     "role_id", "department_id",
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -46,8 +44,6 @@ class FilesController extends Controller
         $file->name = $request->name;
         $file->category_id = $request->category;
         $file->user_id = (auth()->id());
-        $file->role_id = $request->role;
-        $file->department_id = $request->department;
 
 //        $file->url = $request->file
         $url = null;

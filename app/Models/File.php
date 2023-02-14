@@ -10,11 +10,28 @@ class File extends Model
     use HasFactory;
 
     protected $fillable = [
-        "name", "url", "owner_id", "folder_id", "category_id"
+        "name", "url", "user_id", "deleted_by", "category_id", "role_id", "department_id",
     ];
 
     public function categories()
     {
         return $this->belongsTo(FileCategory::class);
     }
+
+    public function departments()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+//    add deleted by
 }
