@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\PassportController;
 use Illuminate\Http\Request;
@@ -23,3 +24,4 @@ Route::post('register', [PassportController::class, 'register']);
 Route::post('login', [PassportController::class, 'login']);
 
 Route::resource('files', FilesController::class)->middleware('auth:api');
+Route::resource('departments', DepartmentController::class);

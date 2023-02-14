@@ -10,7 +10,17 @@ class FilesController extends Controller
 {
     public function index()
     {
-        $files = auth()->user()->files;
+//        Get my role and department
+        $role_id = Auth::user()->role_id;
+
+        $files = File::with('access_level')->get();
+        dd($files);
+        if($role_id === config('constants.MANAGER_ROLE_ID')){
+            $files = File::all();
+        }else{
+            $files = File::where('role_id','>=' ,$role_id);
+        }
+
 
         return response()->json([
             'success' => true,
@@ -37,7 +47,7 @@ class FilesController extends Controller
 
     public function store(Request $request)
     {
-//     "role_id", "department_id",
+//        dd($request->all());
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -46,10 +56,7 @@ class FilesController extends Controller
         $file->name = $request->name;
         $file->category_id = $request->category;
         $file->user_id = (auth()->id());
-        $file->role_id = $request->role;
-        $file->department_id = $request->department;
 
-//        $file->url = $request->file
         $url = null;
         if ($request->hasFile('file')) {
             $url = $request->file('file')->store(
@@ -61,11 +68,24 @@ class FilesController extends Controller
         $file->url = $url;
 
 
-        if (auth()->user()->files()->save($file))
+        if (auth()->user()->files()->save($file)){
+            $departments = $request->departments;
+            $roles =$request->roles;
+
+            foreach ($roles as $role) {
+                $file->roles()->attach($role);
+                $file->save();
+            }
+            foreach ($departments as $department) {
+                $file->roles()->attach($department);
+                $file->save();
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $file->toArray()
             ]);
+        }
         else
             return response()->json([
                 'success' => false,
@@ -109,6 +129,7 @@ class FilesController extends Controller
         }
 
         if ($file->delete()) {
+            $file->deleted_by = auth()->id();
             return response()->json([
                 'success' => true
             ]);

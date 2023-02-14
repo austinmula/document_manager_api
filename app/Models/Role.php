@@ -13,7 +13,7 @@ class Role extends Model
 
     public function files()
     {
-        return $this->belongsToMany(File::class);
+        return $this->belongsToMany(File::class, 'role_file');
     }
 
     public function permissions() {

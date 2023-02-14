@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -9,28 +10,28 @@ class DepartmentController extends Controller
     //
     public function index()
     {
-        $files = auth()->user()->files;
-
+        $depts = Department::all();
         return response()->json([
             'success' => true,
-            'data' => $files
+            'data' => $depts
         ]);
     }
 
     public function show($id)
     {
-        $file = auth()->user()->files()->find($id);
+//        $file = auth()->user()->files()->find($id);
+        $depts =Department::all()->find($id);
 
-        if (!$file) {
+        if (!$depts) {
             return response()->json([
                 'success' => false,
-                'message' => 'File not found '
+                'message' => 'Department not found '
             ], 400);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $file->toArray()
+            'data' => $depts->toArray()
         ], 400);
     }
 
@@ -40,47 +41,34 @@ class DepartmentController extends Controller
             'name' => 'required',
         ]);
 
-        $file = new File();
-        $file->name = $request->name;
-        $file->category_id = $request->category;
-        $file->user_id = (auth()->id());
+        $dept = new Department();
+        $dept->name = $request->name;
 
-//        $file->url = $request->file
-        $url = null;
-        if ($request->hasFile('file')) {
-            $url = $request->file('file')->store(
-                'files',
-                'public',
-            );
-        }
-
-        $file->url = $url;
-
-
-        if (auth()->user()->files()->save($file))
+        if ($dept->save())
             return response()->json([
                 'success' => true,
-                'data' => $file->toArray()
+                'data' => $dept->toArray()
             ]);
         else
             return response()->json([
                 'success' => false,
-                'message' => 'File not added'
+                'message' => 'Department not added'
             ], 500);
     }
 
     public function update(Request $request, $id)
     {
-        $file = auth()->user()->files()->find($id);
+//        $dept = auth()->user()->files()->find($id);
+        $dept =Department::all()->find($id);
 
-        if (!$file) {
+        if (!$dept) {
             return response()->json([
                 'success' => false,
-                'message' => 'File not found'
+                'message' => 'Department not found'
             ], 400);
         }
 
-        $updated = $file->fill($request->all())->save();
+        $updated = $dept->fill($request->all())->save();
 
         if ($updated)
             return response()->json([
@@ -89,29 +77,29 @@ class DepartmentController extends Controller
         else
             return response()->json([
                 'success' => false,
-                'message' => 'File can not be updated'
+                'message' => 'Department can not be updated'
             ], 500);
     }
 
     public function destroy($id)
     {
-        $file = auth()->user()->files()->find($id);
+        $dept =Department::all()->find($id);
 
-        if (!$file) {
+        if (!$dept) {
             return response()->json([
                 'success' => false,
-                'message' => 'File not found'
+                'message' => 'Department not found'
             ], 400);
         }
 
-        if ($file->delete()) {
+        if ($dept->delete()) {
             return response()->json([
                 'success' => true
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'File can not be deleted'
+                'message' => 'Department can not be deleted'
             ], 500);
         }
     }

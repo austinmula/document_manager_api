@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         "name", "url", "user_id", "deleted_by", "category_id", "role_id", "department_id",
@@ -20,12 +21,12 @@ class File extends Model
 
     public function departments()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsToMany(Department::class, 'department_file');
     }
 
-    public function roles()
+    public function access_level()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsToMany(Role::class, 'role_file');
     }
 
     public function users()
