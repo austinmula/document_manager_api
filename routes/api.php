@@ -4,6 +4,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\PassportController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,7 @@ Route::post('register', [PassportController::class, 'register']);
 Route::post('login', [PassportController::class, 'login']);
 
 Route::resource('files', FilesController::class)->middleware('auth:api');
+Route::resource('requests', RequestController::class)->middleware('auth:api');
 Route::resource('departments', DepartmentController::class);
 Route::resource('permissions', PermissionController::class);
 
