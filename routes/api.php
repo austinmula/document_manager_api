@@ -32,6 +32,10 @@ Route::resource('departments', DepartmentController::class);
 Route::resource('permissions', PermissionController::class);
 Route::resource('users', UserController::class);
 
+Route::controller(\App\Http\Controllers\TemporaryFilesController::class)->group(function () {
+    Route::post('/give-temporary-access', 'store');
+});
+
 Route::group(['middleware' => 'role:admin'], function() {
     Route::get('/user', function() {
         return 'Welcome...!!';
