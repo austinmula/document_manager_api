@@ -11,17 +11,22 @@ class FilesController extends Controller
     public function index()
     {
 //        Get my role and department
-        $role_id = Auth::user()->role_id;
+        $user = Auth::user();
 
-        $files = File::with('access_level')->get();
-        dd($files);
-        if($role_id === config('constants.MANAGER_ROLE_ID')){
-            $files = File::all();
-        }else{
-            $files = File::where('role_id','>=' ,$role_id);
-        }
+//        dd($user);
 
+        $files = File::whereHas('access_level' , function($query) use ( $user ){
+            $query->where('role_id',$user->role_id);
+        })->whereHas ('departments' , function($query) use ($user){
+            $query->where('department_id',$user->department_id);
+        })->get();
 
+//        dd($files->count());
+//        if($role_id === config('constants.MANAGER_ROLE_ID')){
+//            $files = File::all();
+//        }else{
+//            $files = File::where('role_id','>=' ,$role_id);
+//        }
         return response()->json([
             'success' => true,
             'data' => $files
@@ -73,11 +78,11 @@ class FilesController extends Controller
             $roles =$request->roles;
 
             foreach ($roles as $role) {
-                $file->roles()->attach($role);
+                $file->access_level()->attach($role);
                 $file->save();
             }
             foreach ($departments as $department) {
-                $file->roles()->attach($department);
+                $file->departments()->attach($department);
                 $file->save();
             }
 

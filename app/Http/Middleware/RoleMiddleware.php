@@ -12,18 +12,20 @@ class RoleMiddleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+
      */
-    public function handle(Request $request, Closure $next, $role, $permission = null): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+    public function handle($request, Closure $next, $role, $permission = null)
     {
-
-        if(!$request->user()->hasRole($role)) {
-            abort(404);
+        if(!$request->user('api')->hasRole($role)) {
+            return response()->json(['error' => 'Unauthorised'], 401);
+//            abort(404);
         }
 
-        if($permission !== null && !$request->user()->can($permission)) {
-            abort(404);
+        if($permission !== null && !$request->user('api')->can($permission)) {
+//            abort(404);
+            return response()->json(['error' => 'Unauthorised'], 401);
         }
+
 
         return $next($request);
     }

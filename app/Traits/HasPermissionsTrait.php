@@ -40,18 +40,18 @@ public function hasPermissionThroughRole($permission) {
     return false;
 }
 
-public function hasRole( ... $roles ) {
-    foreach ($roles as $role) {
-        if ($this->roles->contains('slug', $role)) {
-            return true;
-        }
+public function hasRole($role) {
+
+    if ($this->role->slug == $role) {
+        return true;
     }
 
     return false;
 }
 
-public function roles() {
-    return $this->belongsToMany(Role::class,'user_role');
+public function role() {
+//    return $this->belongsToMany(Role::class,'user_role');
+    return $this->belongsTo(Role::class, 'role_id');
 }
 public function permissions() {
     return $this->belongsToMany(Permission::class,'user_permission');

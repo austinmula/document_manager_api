@@ -20,18 +20,18 @@ class PermissionController extends Controller
     public function show($id)
     {
 //        $file = auth()->user()->files()->find($id);
-        $depts =Department::all()->find($id);
+        $permission =Permission::all()->find($id);
 
-        if (!$depts) {
+        if (!$permission) {
             return response()->json([
                 'success' => false,
-                'message' => 'Department not found '
+                'message' => 'Permission not found '
             ], 400);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $depts->toArray()
+            'data' => $permission->toArray()
         ], 400);
     }
 
@@ -39,36 +39,38 @@ class PermissionController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
+            'slug' => 'required'
         ]);
 
-        $dept = new Department();
-        $dept->name = $request->name;
+        $permission = new Permission();
+        $permission->name = $request->name;
+        $permission->slug = $request->slug;
 
-        if ($dept->save())
+        if ($permission->save())
             return response()->json([
                 'success' => true,
-                'data' => $dept->toArray()
+                'data' => $permission->toArray()
             ]);
         else
             return response()->json([
                 'success' => false,
-                'message' => 'Department not added'
+                'message' => 'Permission not saved'
             ], 500);
     }
 
     public function update(Request $request, $id)
     {
 //        $dept = auth()->user()->files()->find($id);
-        $dept =Department::all()->find($id);
+        $permission =Permission::all()->find($id);
 
-        if (!$dept) {
+        if (!$permission) {
             return response()->json([
                 'success' => false,
-                'message' => 'Department not found'
+                'message' => 'Permission not found'
             ], 400);
         }
 
-        $updated = $dept->fill($request->all())->save();
+        $updated = $permission->fill($request->all())->save();
 
         if ($updated)
             return response()->json([
@@ -77,29 +79,29 @@ class PermissionController extends Controller
         else
             return response()->json([
                 'success' => false,
-                'message' => 'Department can not be updated'
+                'message' => 'Permission cannot be updated'
             ], 500);
     }
 
     public function destroy($id)
     {
-        $dept =Department::all()->find($id);
+        $permission =Permission::all()->find($id);
 
-        if (!$dept) {
+        if (!$permission) {
             return response()->json([
                 'success' => false,
-                'message' => 'Department not found'
+                'message' => 'Permission not found'
             ], 400);
         }
 
-        if ($dept->delete()) {
+        if ($permission->delete()) {
             return response()->json([
                 'success' => true
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Department can not be deleted'
+                'message' => 'Permission can not be deleted'
             ], 500);
         }
     }
