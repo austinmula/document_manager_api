@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\NewUserCreated;
+use App\Events\UserMadePermissionRequest;
 use App\Listeners\EmailDefaultCredentials;
+use App\Listeners\EmailPermissionRequest;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewUserCreated::class => [
             EmailDefaultCredentials::class,
+        ],
+        UserMadePermissionRequest::class=>[
+            EmailPermissionRequest::class,
         ]
     ];
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserMadePermissionRequest;
 use Illuminate\Http\Request;
 
 class RequestController extends Controller
@@ -11,7 +12,7 @@ class RequestController extends Controller
     public function index()
     {
         $requests = auth()->user()->requests;
-//        dd($requests);
+
         return response()->json([
             'success' => true,
             'data' => $requests
@@ -46,8 +47,10 @@ class RequestController extends Controller
         $new_request->status_id = $request->status_id;
         $new_request->file_id = $request->file_id;
         $new_request->user_id = (auth()->id());
+        $new_request->request_to = $request->request_to;
 
         if (auth()->user()->requests()->save($new_request)){
+            event(new UserMadePermissionRequest('johndoe@mail.com', 'admin@admin.com', 'Hello Need Access to ...'));
             return response()->json([
                 'success' => true,
                 'data' => $new_request->toArray()
