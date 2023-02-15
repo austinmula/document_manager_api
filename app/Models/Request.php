@@ -23,14 +23,12 @@ class Request extends Model
     {
         return $this->belongsTo(File::class, 'file_id');
     }
-    public function approval()
+    public function approver()
     {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
-    public function rejection()
-    {
-        return $this->belongsTo(User::class, 'rejected_by');
+        return $this->belongsTo(User::class, 'request_to');
     }
 
-    public function status(){}
+    public function status(){
+        return $this->hasMany(Request::class);
+    }
 }

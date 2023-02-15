@@ -11,7 +11,7 @@ class RequestController extends Controller
     public function index()
     {
         $requests = auth()->user()->requests;
-
+//        dd($requests);
         return response()->json([
             'success' => true,
             'data' => $requests
@@ -37,7 +37,29 @@ class RequestController extends Controller
 
     public function store(Request $request)
     {
+//        dd(auth()->id());
 
+        $new_request = new \App\Models\Request();
+
+        $new_request->name = $request->name;
+        $new_request->message = $request->message;
+        $new_request->status_id = $request->status_id;
+        $new_request->file_id = $request->file_id;
+        $new_request->user_id = (auth()->id());
+
+        if (auth()->user()->requests()->save($new_request)){
+            return response()->json([
+                'success' => true,
+                'data' => $new_request->toArray()
+            ]);
+        }
+
+        else
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Request not added'
+            ], 500);
     }
 
 }
