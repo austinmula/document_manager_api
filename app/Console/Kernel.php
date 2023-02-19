@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('tempfiles:reminders')->everyMinute()->emailOutputOnFailure("admin@admin.com");
     }
 
-    // dom
+    // doadimfr
     /**
      * Register the commands for the application.
      *
