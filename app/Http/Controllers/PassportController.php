@@ -39,11 +39,23 @@ class PassportController extends Controller
             'password' => $request->password
         ];
 
+        $user = User::with('role.permissions', 'departments')->get()->where('email', $data['email'])->first();
+//        dd($user->all());
+
         if (auth()->attempt($data)) {
             $token = auth()->user()->createToken('QWERTYUIOPasdfghjkl1234567890')->accessToken;
-            return response()->json(['token' => $token], 200);
+            return response()->json(['token' => $token, 'user' => $user],  200);
         } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            return response()->json(['error' => 'Invalid email or password'], 401);
         }
+    }
+
+
+    public function logout(Request $request)
+    {
+        auth()->guard('api')->user()->token()->revoke();
+//        auth()->user()->token()->revoke();
+//
+        return response()->json(['message' => 'Successfully logged out'], 201);
     }
 }

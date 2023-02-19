@@ -13,7 +13,9 @@ class UserController extends Controller
     //
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->get();
+//        $users = User::orderBy('id', 'desc')->get();
+        $users = User::with('role.permissions', 'departments')->get();
+//        dd($user->all());
         return response()->json([
             'success' => true,
             'data' => $users
@@ -41,9 +43,11 @@ class UserController extends Controller
 
         if ($user){
             event(new NewUserCreated($request->input('email'), $password));
+
+            $user_resp = User::with('role.permissions', 'departments')->get()->where('email', $request->input('email'))->first();
             return response()->json([
                 'success' => true,
-                'data' => $user->toArray()
+                'data' => $user_resp
             ]);
         }
 

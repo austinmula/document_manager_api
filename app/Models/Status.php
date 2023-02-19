@@ -15,4 +15,9 @@ class Status extends Model
     {
         return $this->belongsTo(File::class, 'status_id');
     }
+
+    public function requests()
+    {
+        return $this->belongsToMany(Request::class);
+    }
 }

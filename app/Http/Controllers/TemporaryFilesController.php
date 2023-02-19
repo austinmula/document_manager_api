@@ -6,6 +6,19 @@ use Illuminate\Http\Request;
 
 class TemporaryFilesController extends Controller
 {
+
+    public function index()
+    {
+
+        $user = auth()->user();
+
+        $requests = \App\Models\Request::with('file', 'user', 'status')->where('request_to', $user->id)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $requests
+        ]);
+    }
     public function store(Request $request)
     {
 

@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserMadePermissionRequest
+class ExpiringSoon
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -20,6 +20,7 @@ class UserMadePermissionRequest
 
     /**
      * Create a new event instance.
+     *
      * @return void
      */
     public function __construct($senderEmail, $receiverEmail, $message)

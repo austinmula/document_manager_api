@@ -29,6 +29,6 @@ class Request extends Model
     }
 
     public function status(){
-        return $this->hasMany(Request::class);
+        return $this->belongsTo(Status::class);
     }
 }
