@@ -29,6 +29,12 @@ class File extends Model
         return $this->belongsToMany(Role::class, 'role_file');
     }
 
+    public function user_temporary()
+    {
+        return $this-> belongsToMany(User::class, 'temporary_files');
+//        return $this->belongsToMany(User::class)->withPivot('file_id', 'user_id');
+    }
+
     public function users()
     {
         return $this->belongsTo(User::class);

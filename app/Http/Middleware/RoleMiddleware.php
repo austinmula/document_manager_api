@@ -14,8 +14,9 @@ class RoleMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
 
      */
-    public function handle($request, Closure $next, $role, $permission = null)
+    public function handle(Request $request, Closure $next, $role, $permission = null)
     {
+//        dd($request->user('api'));
         if(!$request->user('api')->hasRole($role)) {
             return response()->json(['error' => 'Unauthorised'], 401);
 //            abort(404);

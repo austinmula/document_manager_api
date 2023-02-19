@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,10 +11,7 @@ class FilesController extends Controller
 {
     public function index()
     {
-//        Get my role and department
         $user = Auth::user();
-
-//        dd($user);
 
         $files = File::whereHas('access_level' , function($query) use ( $user ){
             $query->where('role_id',$user->role_id);
@@ -21,15 +19,17 @@ class FilesController extends Controller
             $query->where('department_id',$user->department_id);
         })->get();
 
-//        dd($files->count());
-//        if($role_id === config('constants.MANAGER_ROLE_ID')){
-//            $files = File::all();
-//        }else{
-//            $files = File::where('role_id','>=' ,$role_id);
-//        }
+        $files_noaccess = File::with('departments')->whereDoesntHave('access_level' , function($query) use ( $user ){
+            $query->where('role_id', '=', $user->role_id);
+        })->get(["id", "name"]);
+
+        $temporary = auth()->user()->temporary_files()->get();
+
         return response()->json([
             'success' => true,
-            'data' => $files
+            'data' => $files,
+            'temp'=> $temporary->toArray(),
+            'noaccess' => $files_noaccess
         ]);
     }
 
@@ -47,12 +47,11 @@ class FilesController extends Controller
         return response()->json([
             'success' => true,
             'data' => $file->toArray()
-        ], 400);
+        ], 200);
     }
 
-    public function store(Request $request)
-    {
-//        dd($request->all());
+    public function store(Request $request){
+
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -74,17 +73,19 @@ class FilesController extends Controller
 
 
         if (auth()->user()->files()->save($file)){
-            $departments = $request->departments;
-            $roles =$request->roles;
+            $departments =$request->departments;
 
-            foreach ($roles as $role) {
-                $file->access_level()->attach($role);
-                $file->save();
-            }
+
             foreach ($departments as $department) {
                 $file->departments()->attach($department);
                 $file->save();
-            }
+           }
+
+            $roles =$request->roles;
+            foreach ($roles as $role) {
+                $file->access_level()->attach($role);
+                $file->save();
+           }
 
             return response()->json([
                 'success' => true,

@@ -22,7 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id'
+        'role_id',
+        'department_id'
     ];
 
     /**
@@ -49,9 +50,15 @@ class User extends Authenticatable
         return $this->hasMany(File::class);
     }
 
+    public function temporary_files()
+    {
+//        return $this-> belongsToMany(File::class, 'temporary_files');
+        return $this->belongsToMany(File::class, 'temporary_files')->withPivot('file_id', 'user_id', 'deleted_at', 'expires_at', 'created_at');
+
+    }
     public function departments()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function requests()
